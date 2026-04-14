@@ -1,0 +1,46 @@
+padre(abraham, [homero, herbert]).
+padre(clancy, [marge, patty, selma]).
+padre(homero, [bart, maggie, lisa]).
+
+madre(mona, [homero]).
+madre(jacqueline, [marge, patty, selma]).
+madre(selma, [ling]).
+madre(marge, [bart, lisa, maggie]).
+
+
+pertenece(X, [X|_]).
+pertenece(X, [_|T]) :- pertenece(X, T).
+
+
+es_padre(P, H) :- padre(P, Lista), pertenece(H, Lista).
+es_madre(M, H) :- madre(M, Lista), pertenece(H, Lista).
+
+
+
+abuelo(X,Y) :-
+    (es_padre(X,Z) ; es_madre(X,Z)),
+    (es_padre(Z,Y) ; es_madre(Z,Y)).
+
+hijo(X,Y) :- es_padre(Y,X).
+hijo(X,Y) :- es_madre(Y,X).
+
+hermano(X,Y) :-
+    es_padre(P,X),
+    es_padre(P,Y),
+    X \= Y.
+
+tio(X,Y) :-
+    hermano(X,Z),
+    es_padre(Z,Y).
+
+tio(X,Y) :-
+    hermano(X,Z),
+    es_madre(Z,Y).
+
+sobrino(X,Y) :- tio(Y,X).
+
+primo(X,Y) :-
+    (es_padre(A,X) ; es_madre(A,X)),
+    (es_padre(B,Y) ; es_madre(B,Y)),
+    hermano(A,B),
+    X \= Y.
