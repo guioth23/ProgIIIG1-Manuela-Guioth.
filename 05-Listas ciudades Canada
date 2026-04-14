@@ -1,0 +1,37 @@
+arista(vancouver, [(edmonton,16), (calgary,13)]).
+arista(calgary, [(edmonton,4), (regina,14)]).
+arista(edmonton, [(saskatoon,12)]).
+arista(saskatoon, [(calgary,9), (winnipeg,20)]).
+arista(regina, [(saskatoon,7), (winnipeg,4)]).
+
+
+conexion(B, Costo, [(B,Costo)|_]).
+conexion(B, Costo, [_|T]) :- conexion(B, Costo, T).
+
+
+conectado(A,B,Costo) :-
+    arista(A, Lista),
+    conexion(B, Costo, Lista).
+
+conectado(A,B,Costo) :-
+    arista(B, Lista),
+    conexion(A, Costo, Lista).
+
+tiene_arista(Nodo) :-
+    arista(Nodo,_).
+
+tiene_arista(Nodo) :-
+    arista(_, Lista),
+    conexion(Nodo, _, Lista).
+
+costo_via(X,Y,Z,CostoTotal) :-
+    conectado(X,Y,C1),
+    conectado(Y,Z,C2),
+    CostoTotal is C1 + C2.
+
+conectado(A,B) :-
+    conectado(A,B,_).
+
+conectado(A,B) :-
+    conectado(A,C,_),
+    conectado(C,B).
